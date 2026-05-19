@@ -26,7 +26,7 @@ int main() {
         string input;
 
         for (int i = 0; i < 8; i++) {
-            cout << chars[i] << " ";
+            cout << i << " ";
 
             for (int j = 0; j < 8; j++) {
                 char output[3];
@@ -57,16 +57,37 @@ int main() {
             cout << endl;
         }
 
-        cout << "   1  2  3  4  5  6  7  8" << endl << endl;
+        cout << "   A  B  C  D  E  F  G  H" << endl << endl;
 
-        cout << " What is your move (\"quit\" to quit, input format is \"a2-c3\")? ";
+        cout << " What is your move (\"quit\" to quit, input format is \"A2-C3\")? ";
         cin >> input;
 
         if (input == "quit") {
             running = false;
+        } else {
+            // Movement
+            int from_index[2] = {-1, -1};
+            int to_index[2] = {-1, -1};
+
+            for (int i = 0; i < 8; i++) {
+                if (chars[i] == input[0]) {
+                    from_index[1] = i;
+                }
+
+                if (chars[i] == input[3]) {
+                    to_index[1] = i;
+                }
+            }
+
+            from_index[0] = input[1] - '0';
+            to_index[0] = input[4] - '0';
+
+            Board[to_index[0]][to_index[1]] = Board[from_index[0]][from_index[1]];
+            Board[from_index[0]][from_index[1]] = NOPIECE;
+
+            cout << endl << from_index[0] << " " << from_index[1] << endl << to_index[0] << " " << to_index[1] << endl;
         }
 
-        system("clear");
     }
 
     return 0;
