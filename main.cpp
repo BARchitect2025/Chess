@@ -3,22 +3,96 @@
 
 using namespace std;
 
-enum piece {NOPIECE, WPAWN, WKNIGHT, WBISHOP, WROOK, WQUEEN, WKING,
-            BPAWN = 10, BKNIGHT, BBISHOP, BROOK, BQUEEN, BKING};
+enum piece {
+    NOPIECE, PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING
+};
+
+enum color {
+    NOCOLOR = -1, BLACK, WHITE
+};
+
+struct Board {
+    piece pieces[8][8] = {
+        {ROOK, KNIGHT, BISHOP, KING, QUEEN, BISHOP, KNIGHT, ROOK},
+        {PAWN, PAWN, PAWN, PAWN, PAWN, PAWN, PAWN, PAWN},
+        {},
+        {},
+        {},
+        {},
+        {PAWN, PAWN, PAWN, PAWN, PAWN, PAWN, PAWN, PAWN},
+        {ROOK, KNIGHT, BISHOP, QUEEN, KING, BISHOP, KNIGHT, ROOK}
+    };
+
+    color colors[8][8] = {
+        {BLACK, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK},
+        {BLACK, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK},
+        {NOCOLOR, NOCOLOR, NOCOLOR, NOCOLOR, NOCOLOR, NOCOLOR, NOCOLOR, NOCOLOR},
+        {NOCOLOR, NOCOLOR, NOCOLOR, NOCOLOR, NOCOLOR, NOCOLOR, NOCOLOR, NOCOLOR},
+        {NOCOLOR, NOCOLOR, NOCOLOR, NOCOLOR, NOCOLOR, NOCOLOR, NOCOLOR, NOCOLOR},
+        {NOCOLOR, NOCOLOR, NOCOLOR, NOCOLOR, NOCOLOR, NOCOLOR, NOCOLOR, NOCOLOR},
+        {WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE},
+        {WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE}
+    };
+
+    void move_piece(int to_index[2], int from_index[2]) {
+        pieces[to_index[0]][to_index[1]] = pieces[from_index[0]][from_index[1]];
+        pieces[from_index[0]][from_index[1]] = NOPIECE;
+
+        colors[to_index[0]][to_index[1]] = colors[from_index[0]][from_index[1]];
+        colors[from_index[0]][from_index[1]] = NOCOLOR;
+    }
+
+    string get_piece(int y, int x) {
+        string output;
+
+        if (colors[y][x] == WHITE) {
+            if (pieces[y][x] == PAWN) {
+                output = "wP";
+            } else if (pieces[y][x] == KNIGHT) {
+                output = "wH";
+            } else if (pieces[y][x] == BISHOP) {
+                output = "wB";
+            } else if (pieces[y][x] == ROOK) {
+                output = "wR";
+            } else if (pieces[y][x] == QUEEN) {
+                output = "wQ";
+            } else if (pieces[y][x] == KING) {
+                output = "wK";
+            }
+        } else if (colors[y][x] == BLACK) {
+            if (pieces[y][x] == PAWN) {
+                output = "bP";
+            } else if (pieces[y][x] == KNIGHT) {
+                output = "bH";
+            } else if (pieces[y][x] == BISHOP) {
+                output = "bB";
+            } else if (pieces[y][x] == ROOK) {
+                output = "bR";
+            } else if (pieces[y][x] == QUEEN) {
+                output = "bQ";
+            } else if (pieces[y][x] == KING) {
+                output = "bK";
+            }
+        } else {
+            output = "--";
+        }
+
+        return output;
+    }
+};
+
+namespace move_allowed {
+    void pawn(Board board, int to_index[2], int from_index[2], piece from_piece, bool &allowed, color color) {
+        
+    }
+}
+
+
 
 int main() {
     bool running = true;
 
-    piece Board[8][8] = {
-        {BROOK, BKNIGHT, BBISHOP, BKING, BQUEEN, BBISHOP, BKNIGHT, BROOK},
-        {BPAWN, BPAWN, BPAWN, BPAWN, BPAWN, BPAWN, BPAWN, BPAWN},
-        {},
-        {},
-        {},
-        {},
-        {WPAWN, WPAWN, WPAWN, WPAWN, WPAWN, WPAWN, WPAWN, WPAWN},
-        {WROOK, WKNIGHT, WBISHOP, WQUEEN, WKING, WBISHOP, WKNIGHT, WROOK}
-    };
+    Board board;
 
     char chars[8] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'};
 
@@ -29,28 +103,7 @@ int main() {
             cout << i << " ";
 
             for (int j = 0; j < 8; j++) {
-                char output[3];
-
-                switch (Board[i][j]) {
-                    // No Piece
-                    case NOPIECE: strcpy(output, "--"); break;
-
-                    // White
-                    case WPAWN: strcpy(output, "wP"); break;
-                    case WKNIGHT: strcpy(output, "wH"); break;
-                    case WBISHOP: strcpy(output, "wB"); break;
-                    case WROOK: strcpy(output, "wR"); break;
-                    case WQUEEN: strcpy(output, "wQ"); break;
-                    case WKING: strcpy(output, "wK"); break;
-
-                    // Black
-                    case BPAWN: strcpy(output, "bP"); break;
-                    case BKNIGHT: strcpy(output, "bH"); break;
-                    case BBISHOP: strcpy(output, "bB"); break;
-                    case BROOK: strcpy(output, "bR"); break;
-                    case BQUEEN: strcpy(output, "bQ"); break;
-                    case BKING: strcpy(output, "bK"); break;
-                }
+                string output = board.get_piece(i, j);
 
                 cout << " " << output;
             }
@@ -82,10 +135,11 @@ int main() {
             from_index[0] = input[1] - '0';
             to_index[0] = input[4] - '0';
 
-            Board[to_index[0]][to_index[1]] = Board[from_index[0]][from_index[1]];
-            Board[from_index[0]][from_index[1]] = NOPIECE;
+            piece from_piece = board.pieces[from_index[0]][from_index[1]];
 
-            cout << endl << from_index[0] << " " << from_index[1] << endl << to_index[0] << " " << to_index[1] << endl;
+            board.move_piece(to_index, from_index);
+
+            system("clear");
         }
 
     }
