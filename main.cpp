@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string.h>
+#include <vector>
 
 using namespace std;
 
@@ -34,12 +35,84 @@ struct Board {
         {WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE}
     };
 
-    void move_piece(int to_index[2], int from_index[2]) {
-        pieces[to_index[0]][to_index[1]] = pieces[from_index[0]][from_index[1]];
-        pieces[from_index[0]][from_index[1]] = NOPIECE;
+    bool check_piece(int to_index[2], int from_index[2]) {
+        vector<int> valid_y;
+        vector<int> valid_x;
 
-        colors[to_index[0]][to_index[1]] = colors[from_index[0]][from_index[1]];
-        colors[from_index[0]][from_index[1]] = NOCOLOR;
+        // Pawn
+        if (pieces[from_index[0]][from_index[1]] == PAWN) {
+            // White pawn
+            if (colors[from_index[0]][from_index[1]] == WHITE) {
+                // Starting move
+                if (from_index[0] == 6) {
+                    // Able to move two spaces
+                    if (pieces[to_index[0]][from_index[1]] == NOPIECE && pieces[to_index[0] + 1][from_index[1]] == NOPIECE) {
+                        valid_y.push_back(4);
+                        valid_x.push_back(from_index[1]);
+                    }
+                }
+
+                // Always check this
+                if (pieces[to_index[0]][from_index[1]] == NOPIECE) {
+                    valid_y.push_back(from_index[0] - 1);
+                    valid_x.push_back(from_index[1]);
+                }
+
+                // Taking pieces
+                if (colors[from_index[0] - 1][from_index[1] - 1] == BLACK) {
+                    valid_y.push_back(from_index[0] - 1);
+                    valid_x.push_back(from_index[1] - 1);
+                }
+
+                if (colors[from_index[0] - 1][from_index[1] + 1] == BLACK) {
+                    valid_y.push_back(from_index[0] - 1);
+                    valid_x.push_back(from_index[1] + 1);
+                }
+            // Black pawn
+            } else {
+                // Starting move
+                if (from_index[0] == 1) {
+                    if (pieces[to_index[0]][from_index[1]] == NOPIECE && pieces[to_index[0] - 1][from_index[1]] == NOPIECE) {
+                        valid_y.push_back(3);
+                        valid_x.push_back(from_index[1]);
+                    }
+                }
+
+                if (pieces[to_index[0]][from_index[1]] == NOPIECE) {
+                    valid_y.push_back(from_index[0] + 1);
+                    valid_x.push_back(from_index[1]);
+                }
+
+                // Taking pieces
+                if (colors[from_index[0] + 1][from_index[1] - 1] == WHITE) {
+                    valid_y.push_back(from_index[0] + 1);
+                    valid_x.push_back(from_index[1] - 1);
+                }
+
+                if (colors[from_index[0] + 1][from_index[1] + 1] == WHITE) {
+                    valid_y.push_back(from_index[0] + 1);
+                    valid_x.push_back(from_index[1] + 1);
+                }
+            }
+        }
+
+        for (int i = 0; i < valid_y.size(); i++) {
+            if (valid_y[i] == to_index[0] && valid_x[i] == to_index[1]) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    void move_piece(int to_index[2], int from_index[2]) {
+        if (check_piece(to_index, from_index)) {
+            pieces[to_index[0]][to_index[1]] = pieces[from_index[0]][from_index[1]];
+            pieces[from_index[0]][from_index[1]] = NOPIECE;
+
+            colors[to_index[0]][to_index[1]] = colors[from_index[0]][from_index[1]];
+            colors[from_index[0]][from_index[1]] = NOCOLOR;
+        }
     }
 
     string get_piece(int y, int x) {
@@ -80,14 +153,6 @@ struct Board {
         return output;
     }
 };
-
-namespace move_allowed {
-    void pawn(Board board, int to_index[2], int from_index[2], piece from_piece, bool &allowed, color color) {
-        
-    }
-}
-
-
 
 int main() {
     bool running = true;
