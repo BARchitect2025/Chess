@@ -94,6 +94,52 @@ struct Board {
                     valid_x.push_back(from_index[1] + 1);
                 }
             }
+        } else if (pieces[from_index[0]][from_index[1]] == KNIGHT) {
+            int x, y;
+
+            // Left
+            if (x = from_index[1] - 2, y = from_index[0] - 1; colors[y][x] != colors[from_index[0]][from_index[1]]) {
+                valid_y.push_back(y);
+                valid_x.push_back(x);
+            }
+
+            if (x = from_index[1] - 2, y = from_index[0] + 1; colors[y][x] != colors[from_index[0]][from_index[1]]) {
+                valid_y.push_back(y);
+                valid_x.push_back(x);
+            }
+
+            // Right
+            if (x = from_index[1] + 2, y = from_index[0] - 1; colors[y][x] != colors[from_index[0]][from_index[1]]) {
+                valid_y.push_back(y);
+                valid_x.push_back(x);
+            }
+
+            if (x = from_index[1] + 2, y = from_index[0] + 1; colors[y][x] != colors[from_index[0]][from_index[1]]) {
+                valid_y.push_back(y);
+                valid_x.push_back(x);
+            }
+
+            // Up
+            if (x = from_index[1] - 1, y = from_index[0] - 2; colors[y][x] != colors[from_index[0]][from_index[1]]) {
+                valid_y.push_back(y);
+                valid_x.push_back(x);
+            }
+
+            if (x = from_index[1] + 1, y = from_index[0] - 2; colors[y][x] != colors[from_index[0]][from_index[1]]) {
+                valid_y.push_back(y);
+                valid_x.push_back(x);
+            }
+
+            // Down
+            if (x = from_index[1] - 1, y = from_index[0] + 2; colors[y][x] != colors[from_index[0]][from_index[1]]) {
+                valid_y.push_back(y);
+                valid_x.push_back(x);
+            }
+
+            if (x = from_index[1] + 1, y = from_index[0] + 2; colors[y][x] != colors[from_index[0]][from_index[1]]) {
+                valid_y.push_back(y);
+                valid_x.push_back(x);
+            }
         }
 
         for (int i = 0; i < valid_y.size(); i++) {
