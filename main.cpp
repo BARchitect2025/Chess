@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string.h>
 #include <vector>
+#include <cctype>
 
 using namespace std;
 
@@ -482,6 +483,36 @@ struct Board {
             colors[to_index[0]][to_index[1]] = colors[from_index[0]][from_index[1]];
             colors[from_index[0]][from_index[1]] = NOCOLOR;
         }
+
+        bool can_promote = false;
+
+        if (pieces[to_index[0]][to_index[1]] == PAWN) {
+            if (colors[to_index[0]][to_index[1]] == WHITE && to_index[0] == 0) {
+                can_promote = true;
+            } else if (colors[to_index[0]][to_index[0]] && to_index[0] == 7) {
+                can_promote = true;
+            }
+
+            char promote_to;
+
+            if (can_promote) {
+                do {
+                    cout << "What would you like to promote to (h is knight, b is bishop, r is rook, q is queen)? ";
+                    cin >> promote_to;
+                    promote_to = tolower(promote_to);
+                } while (promote_to != 'h' && promote_to != 'b' && promote_to != 'r' && promote_to != 'q');
+            
+                if (promote_to == 'h') {
+                    pieces[to_index[0]][to_index[1]] = KNIGHT;
+                } else if (promote_to == 'b') {
+                    pieces[to_index[0]][to_index[1]] = BISHOP;
+                } else if (promote_to == 'r') {
+                    pieces[to_index[0]][to_index[1]] = ROOK;
+                } else if (promote_to == 'q') {
+                    pieces[to_index[0]][to_index[1]] = QUEEN;
+                }
+            }
+        }
     }
 
     string get_piece(int y, int x) {
@@ -547,7 +578,7 @@ int main() {
 
         cout << "   A  B  C  D  E  F  G  H" << endl << endl;
 
-        cout << " What is " << ((turn == WHITE)? "white's" : "black's") << " move (\"quit\" to quit, input format is \"A2-C3\")? ";
+        cout << "What is " << ((turn == WHITE)? "white's" : "black's") << " move (\"quit\" to quit, input format is \"A2-C3\")? ";
         cin >> input;
 
         if (input == "quit") {
